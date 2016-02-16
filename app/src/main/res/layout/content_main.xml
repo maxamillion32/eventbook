@@ -103,9 +103,10 @@
                     style="?android:attr/buttonStyleSmall"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="New Button"
-                    android:id="@+id/button"
-                    android:background="@drawable/main_button" />
+                    android:text="Register"
+                    android:id="@+id/cm_register_button"
+                    android:background="@drawable/main_button"
+                    android:visibility="visible" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -139,23 +140,29 @@
 
                 <android.support.design.widget.TextInputLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:id="@+id/cm_username_layout">
 
                     <EditText
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Username" />
+                        android:hint="Username"
+                        android:id="@+id/cm_login_username" />
 
                 </android.support.design.widget.TextInputLayout>
 
                 <android.support.design.widget.TextInputLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:id="@+id/cm_password_layout">
 
                     <EditText
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Password" />
+                        android:hint="Password"
+                        android:password="true"
+                        android:inputType="textNoSuggestions|textPassword"
+                        android:id="@+id/cm_login_password" />
 
                 </android.support.design.widget.TextInputLayout>
 
@@ -164,7 +171,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Login"
-                    android:id="@+id/button2"
+                    android:id="@+id/cm_login_button"
                     android:background="@drawable/main_button" />
 
                 <TextView
