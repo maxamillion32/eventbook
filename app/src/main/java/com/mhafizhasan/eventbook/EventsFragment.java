@@ -1,7 +1,9 @@
 package com.mhafizhasan.eventbook;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -10,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
+import com.mhafizhasan.CreateEventActivity;
 import com.mhafizhasan.eventbook.utils.BaseArguments;
 import com.mhafizhasan.eventbook.utils.ContentView;
 import com.mhafizhasan.eventbook.utils.DynamicFragment;
@@ -17,6 +20,7 @@ import com.mhafizhasan.eventbook.utils.DynamicRecyclerViewAdapter;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 
 public class EventsFragment extends DynamicFragment {
@@ -53,6 +57,7 @@ public class EventsFragment extends DynamicFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        activity = getActivity();
 
         // Inflate and bind
         rootView = inflater.inflate(R.layout.fragment_events, container, false);
@@ -78,6 +83,12 @@ public class EventsFragment extends DynamicFragment {
         adapter.put(new EventContent());
 
         return rootView;
+    }
+
+    @OnClick(R.id.fab)
+    void onClickView() {
+        Intent intent = new Intent(activity, CreateEventActivity.class);
+        activity.startActivity(intent);
     }
 
 }
