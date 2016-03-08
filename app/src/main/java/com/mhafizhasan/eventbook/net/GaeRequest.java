@@ -28,6 +28,10 @@ public abstract class GaeRequest<T> implements Callback<T> {
     private final CallChannel channel = new CallChannel();  // To synchronize server response with activity
     private final View view;        // Activity's layout, used to show "no internet connection" snackbar
 
+    public View getView() {
+        return view;
+    }
+
     public GaeRequest(CallChannel parent, View view) {
         channel.open(this, parent);
         this.view = view;
@@ -44,7 +48,7 @@ public abstract class GaeRequest<T> implements Callback<T> {
     @Override
     public final void onResponse(Call<T> call, Response<T> response) { // final as cannot overwrite by others function
         if(response.isSuccess())
-            onSucces(response.body());
+            onSuccess(response.body());
         else {
                 // Else invalid request, parse error response from server
                 // Get HTTP error code
@@ -73,7 +77,7 @@ public abstract class GaeRequest<T> implements Callback<T> {
         onFailure(null, null);
     }
 
-    protected void onSucces(T response) {
+    protected void onSuccess(T response) {
         // Subclasses should only implement this
         Log.d(TAG, "Received response: " + response);
     }

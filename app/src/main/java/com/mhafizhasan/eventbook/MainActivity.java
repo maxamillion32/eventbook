@@ -2,33 +2,23 @@ package com.mhafizhasan.eventbook;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
-import com.mhafizhasan.eventbook.net.GaeRequest;
-import com.mhafizhasan.eventbook.net.GaeServer;
-import com.mhafizhasan.eventbook.net.model.TokenModel;
+import com.mhafizhasan.eventbook.net.CreateGuestRequest;
+import com.mhafizhasan.eventbook.net.TokenUsingPasswordRequest;
+import com.mhafizhasan.eventbook.net.model.UserModel;
 import com.mhafizhasan.eventbook.utils.CallChannel;
 
-import java.io.IOException;
-import java.util.logging.Logger;
+import java.math.BigInteger;
+import java.security.SecureRandom;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -38,6 +28,10 @@ public class MainActivity extends AppCompatActivity {
     @Bind(R.id.cm_register_layout) LinearLayout registerLayout;
     @Bind(R.id.cm_login_username) EditText usernameView;
     @Bind(R.id.cm_login_password) EditText passwordView;
+    @Bind(R.id.cm_firstname) EditText firstnameView;
+    @Bind(R.id.cm_lastname) EditText lastnameView;
+    @Bind(R.id.cm_firstname_layout) TextInputLayout firstnameLayout;
+    @Bind(R.id.cm_lastname_layout) TextInputLayout lastnameLayout;
     @Bind(R.id.cm_username_layout) TextInputLayout usernameLayout;
     @Bind(R.id.cm_password_layout) TextInputLayout passwordLayout;
     @Bind(R.id.cm_form_layout) LinearLayout formLayout;
@@ -51,6 +45,17 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
+        // If login credentials found, auto login
+        UserLoginDetails login = new UserLoginDetails().from(this);
+        if(login.password != null) {
+            formLayout.setVisibility(View.GONE);       // auto login, no need to show form
+            new TokenUsingPasswordRequest(channel, loginLayout, login.me.email, login.password) {
+                @Override
+                protected void onGrantedAccessToken(String access_token) {
+                    startContentActivity();
+                }
+            }.send();
+        }
     }
 
     @Override
@@ -95,6 +100,37 @@ public class MainActivity extends AppCompatActivity {
 
     @OnClick(R.id.cm_register_button)
     void onClickRegister() {
+        final String firstname = getInput(firstnameView, firstnameLayout);
+        final String lastname = getInput(lastnameView, lastnameLayout);
+
+        if(firstname == null || lastname == null)
+            return;         // form incomplete
+
+        // Generate  random password, 128-bit UUID
+        byte[] random = new byte[16];       // 16 x 8 = 128 bits
+        SecureRandom randomizer = new SecureRandom();
+        randomizer.nextBytes(random);
+        final String password = new BigInteger(1, random).toString(16);
+        // Send create guest request
+        new CreateGuestRequest(channel, loginLayout, firstname, lastname, password) {
+            @Override
+            protected void onSuccess(UserModel response) {
+                // Successfully created, user save to permanent storage
+                UserLoginDetails login = UserLoginDetails.from(MainActivity.this);
+                login.me = response;
+                login.password = password;
+                login.save(MainActivity.this);
+                // Login using this credentials
+                new TokenUsingPasswordRequest(channel, loginLayout, response.email, password) {
+                    @Override
+                    protected void onGrantedAccessToken(String access_token) {
+                        startContentActivity();
+
+                    }
+                }.send();
+
+            }
+        }.send();
 
     }
 
@@ -105,34 +141,15 @@ public class MainActivity extends AppCompatActivity {
 
         if(username == null || password == null)
             return;         // form incomplete
-
-        // TODO: authenticate user and go to content page
-        new GaeRequest<TokenModel>(channel, loginLayout) {
-
+        // Start login
+        new TokenUsingPasswordRequest(channel, loginLayout, username, password) {
             @Override
-            protected Call<TokenModel> getCall() {
-                return GaeServer.api.getTokenUsingPassword(
-                        "password",
-                        username,
-                        password,
-                        GaeServer.CLIENT_ID,
-                        GaeServer.CLIENT_SECRET,
-                        GaeServer.DEFAULT_SCOPE
-                );
-            }
-
-            @Override
-            protected void onSucces(TokenModel response) {
-                Toast.makeText(MainActivity.this, "Logged in: " + response.access_token, Toast.LENGTH_LONG).show();
-                // TODO: Go to next activity
-                Intent intent = new Intent(MainActivity.this, ContentActivity.class);
-                startActivity(intent);
-                finish();
+            public void onGrantedAccessToken(String access_token) {
+                startContentActivity();
             }
 
             @Override
             protected void onError(int httpCode, String httpMessage, String errorType, String errorMessage) {
-                Toast.makeText(MainActivity.this, errorMessage, Toast.LENGTH_LONG).show();
                 // Show back the form
                 formLayout.setVisibility(View.VISIBLE);
                 // Show invalid
@@ -143,12 +160,17 @@ public class MainActivity extends AppCompatActivity {
             }
         }.send();
 
+
         // Hide the form
         formLayout.setVisibility(View.GONE);
 
+    }
 
-
-
+    void startContentActivity() {
+        // Logged in and saved token to storage and proceed to show content
+        Intent i = new Intent(this, ContentActivity.class);
+        startActivity(i);
+        finish();
     }
 
 }

@@ -44,7 +44,7 @@
                 android:layout_height="match_parent"
                 android:padding="20dp"
                 android:id="@+id/cm_register_layout"
-                android:visibility="gone">
+                android:visibility="visible">
 
                 <TextView
                     android:layout_width="match_parent"
@@ -80,23 +80,27 @@
 
                 <android.support.design.widget.TextInputLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:id="@+id/cm_firstname_layout">
 
                     <EditText
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Firstname" />
+                        android:hint="Firstname"
+                        android:id="@+id/cm_firstname" />
 
                 </android.support.design.widget.TextInputLayout>
 
                 <android.support.design.widget.TextInputLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:id="@+id/cm_lastname_layout">
 
                     <EditText
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Lastname" />
+                        android:hint="Lastname"
+                        android:id="@+id/cm_lastname" />
 
                 </android.support.design.widget.TextInputLayout>
 
@@ -128,7 +132,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:padding="20dp"
-                android:id="@+id/cm_login_layout">
+                android:id="@+id/cm_login_layout"
+                android:visibility="gone">
 
                 <TextView
                     android:layout_width="match_parent"
