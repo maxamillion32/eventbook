@@ -43,13 +43,15 @@
 
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:id="@+id/cce_name_layout">
 
             <EditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Event Name"
-                android:fontFamily="sans-serif-light"/>
+                android:fontFamily="sans-serif-light"
+                android:id="@+id/cce_name" />
 
         </android.support.design.widget.TextInputLayout>
 
@@ -94,7 +96,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="CREATE EVENT"
-            android:id="@+id/button" />
+            android:id="@+id/cce_create_button" />
 
 
     </LinearLayout>

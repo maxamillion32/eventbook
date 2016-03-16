@@ -17,14 +17,15 @@
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="140dp"
-            android:id="@+id/imageView4"
-            android:background="#71d889" />
+            android:id="@+id/le_cover"
+            android:background="#71d889"
+            android:scaleType="centerCrop"/>
 
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/imageView4"
+            android:layout_below="@+id/le_cover"
             android:id="@+id/le_details_layout"
             android:layout_toEndOf="@+id/view"
             android:paddingLeft="7dp"
@@ -43,7 +44,7 @@
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:text="Event Name"
-                    android:id="@+id/textView2"
+                    android:id="@+id/le_name"
                     android:fontFamily="sans-serif-light"
                     android:textStyle="bold" />
 
@@ -51,7 +52,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Details"
-                    android:id="@+id/textView4"
+                    android:id="@+id/le_details"
                     android:fontFamily="sans-serif-light" />
             </LinearLayout>
 
@@ -59,7 +60,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="50km"
-                android:id="@+id/textView5"
+                android:id="@+id/le_distance"
                 android:layout_gravity="center" />
 
         </LinearLayout>
@@ -78,9 +79,18 @@
                 android:layout_width="90dp"
                 android:layout_height="90dp"
                 android:layout_margin="3dp"
-                android:src="@drawable/profile" />
+                android:src="@drawable/profile"
+                android:id="@+id/le_icon" />
 
         </android.support.v7.widget.CardView>
+
+        <ImageView
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:id="@+id/le_editable"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:src="@drawable/edit" />
 
     </RelativeLayout>
 

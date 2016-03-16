@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -24,6 +25,10 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.mhafizhasan.eventbook.R;
+import com.mhafizhasan.eventbook.UserLoginDetails;
+import com.mhafizhasan.eventbook.net.CreateEventRequest;
+import com.mhafizhasan.eventbook.net.model.EventModel;
+import com.mhafizhasan.eventbook.utils.CallChannel;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -45,11 +50,15 @@ public class CreateEventActivity extends AppCompatActivity implements DatePicker
     @Bind(R.id.cce_start_date) EditText startingDateView;
     @Bind(R.id.cce_end_date_layout) TextInputLayout endingDateLayout;
     @Bind(R.id.cce_end_date) EditText endingDateView;
+    @Bind(R.id.cce_create_button) Button createButton;
+    @Bind(R.id.cce_name) EditText eventName;
+//    @Bind(R.id.cce_name_layout) T
 
     // Form
     boolean isStartingDate = false;
     Calendar startingDate = null;
     Calendar endingDate = null;
+    Place eventPlace = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,6 +117,7 @@ public class CreateEventActivity extends AppCompatActivity implements DatePicker
                     marker = googleMap.addMarker(markerOptions);
                 }
             });
+            eventPlace = place;
             return;
         }
 
@@ -171,5 +181,42 @@ public class CreateEventActivity extends AppCompatActivity implements DatePicker
         if(event.getAction() == MotionEvent.ACTION_UP)
             showDatePicker(false);
         return true;
+    }
+
+    @OnClick(R.id.cce_create_button)
+    void onClickCreate() {
+        String name = eventName.getText().toString();
+
+        // Convert date format
+        SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd", Locale.UK);
+        String startDate = dateFormatter.format(startingDate.getTime());
+        String endDate = dateFormatter.format(endingDate.getTime());
+
+        // Get address and coordinate
+        String address = eventPlace.getAddress().toString();
+        double latitude = eventPlace.getLatLng().latitude;
+        double longitude = eventPlace.getLatLng().longitude;
+
+        UserLoginDetails login = UserLoginDetails.from(this);
+        CallChannel channel = new CallChannel();
+        channel.open(this);
+
+        new CreateEventRequest(
+                channel,
+                addressView,
+                login.token.access_token,
+                name,
+                latitude,
+                longitude,
+                address,
+                startDate,
+                endDate,
+                true
+        ) {
+            @Override
+            protected void onSuccess(EventModel response) {
+                finish();
+            }
+        }.send();
     }
 }

@@ -6,6 +6,7 @@ import android.view.View;
 
 import com.google.gson.Gson;
 import com.mhafizhasan.eventbook.utils.CallChannel;
+import com.orhanobut.logger.Logger;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -28,6 +29,10 @@ public abstract class GaeRequest<T> implements Callback<T> {
     private final CallChannel channel = new CallChannel();  // To synchronize server response with activity
     private final View view;        // Activity's layout, used to show "no internet connection" snackbar
 
+    public CallChannel getChannel() {
+        return channel;
+    }
+
     public View getView() {
         return view;
     }
@@ -47,8 +52,10 @@ public abstract class GaeRequest<T> implements Callback<T> {
 
     @Override
     public final void onResponse(Call<T> call, Response<T> response) { // final as cannot overwrite by others function
-        if(response.isSuccess())
+        if(response.isSuccess()) {
+            Logger.d("6666666666666");
             onSuccess(response.body());
+        }
         else {
                 // Else invalid request, parse error response from server
                 // Get HTTP error code

@@ -1,5 +1,6 @@
 package com.mhafizhasan.eventbook;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -11,6 +12,7 @@ import android.view.View;
 
 import com.ToxicBakery.viewpager.transforms.DepthPageTransformer;
 import com.mhafizhasan.eventbook.utils.DynamicViewPagerAdapter;
+import com.mhafizhasan.eventbook.utils.PictureRequest;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -69,4 +71,10 @@ public class ContentActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(PictureRequest.onActivityResult(this, requestCode, resultCode, data))
+            return;
+        super.onActivityResult(requestCode, resultCode, data);
+    }
 }

@@ -29,6 +29,8 @@
             android:label="@string/title_activity_create_event"
             android:theme="@style/AppTheme.NoActionBar"></activity>
 
+        <activity android:name="com.soundcloud.android.crop.CropImageActivity" />
+
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyB_3aoglPpXRbdjn5pa7dkrVO0wuUQ73ug"/>
